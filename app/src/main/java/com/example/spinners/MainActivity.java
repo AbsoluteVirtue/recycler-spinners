@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    
+
     String dummyJson = SampleDataProvider.rawJson;
     List<QaItem> dataFromJson;
 

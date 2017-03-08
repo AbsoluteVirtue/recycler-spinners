@@ -24,13 +24,9 @@ public class JsonHelper {
     public static List<QaItem> importJson(Context context, String json) {
         Type listType = new TypeToken<List<QaItem>>(){}.getType();
         Gson gson = new Gson();
-//        Resources res = context.getResources();
-//        InputStream is = res.openRawResource(R.raw.sample);
-
         return gson.fromJson(json, listType);
 
 //        DataItems dataItems = gson.fromJson(json, DataItems.class);
-//
 //        return dataItems.getDataItems();
     }
 
