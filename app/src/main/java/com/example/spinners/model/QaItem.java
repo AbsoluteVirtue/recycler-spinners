@@ -2,15 +2,25 @@ package com.example.spinners.model;
 
 public class QaItem {
 
+    private int id;
     private String question;
     private String[] options;
 
     public QaItem() {
     }
 
-    public QaItem(String question, String[] options) {
+    public QaItem(int id, String question, String[] options) {
+        this.id = id;
         this.question = question;
         this.options = options;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getQuestion() {

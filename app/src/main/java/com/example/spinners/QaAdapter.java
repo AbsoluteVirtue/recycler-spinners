@@ -24,7 +24,7 @@ public class QaAdapter extends RecyclerView.Adapter<QaAdapter.ViewHolder> {
 
     private List<QaItem> mItems;
     private Context mContext;
-    View itemView;
+    private View itemView;
 
     public QaAdapter(Context context, List<QaItem> items) {
         this.mContext = context;
@@ -40,7 +40,7 @@ public class QaAdapter extends RecyclerView.Adapter<QaAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(QaAdapter.ViewHolder holder, int position) {
-        QaItem item = mItems.get(position);
+        final QaItem item = mItems.get(position);
 
         holder.tvName.setText(item.getQuestion());
 
@@ -51,13 +51,15 @@ public class QaAdapter extends RecyclerView.Adapter<QaAdapter.ViewHolder> {
         holder.spinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                return;
+
             }
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selected = parent.getItemAtPosition(position).toString();
-                Toast.makeText(parent.getContext(), selected, Toast.LENGTH_LONG).show();
+                StringBuilder result = new StringBuilder();
+                result.append(item.getId()).append(" ").append(selected);
+                Toast.makeText(parent.getContext(), result, Toast.LENGTH_LONG).show();
             }
         });
     }
