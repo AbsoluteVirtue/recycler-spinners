@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
@@ -34,49 +35,83 @@ public class QaAdapter extends RecyclerView.Adapter<QaAdapter.ViewHolder> {
     @Override
     public QaAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        itemView = inflater.inflate(R.layout.item_row, parent, false);
+
+        switch(viewType) {
+            case R.layout.item_row:
+                itemView = inflater.inflate(R.layout.item_row, parent, false);
+                break;
+            case R.layout.button_row:
+                itemView = inflater.inflate(R.layout.button_row, parent, false);
+        }
+
         return new ViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(QaAdapter.ViewHolder holder, int position) {
-        final QaItem item = mItems.get(position);
+        if (position == mItems.size()) {
+            holder.button.setOnClickListener(new View.OnClickListener() {
 
-        holder.tvName.setText(item.getQuestion());
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(mContext, "Answers submitted successfully", Toast.LENGTH_LONG).show();
+                }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                mContext, android.R.layout.simple_spinner_item, item.getOptions());
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        holder.spinner.setAdapter(adapter);
-        holder.spinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            });
+        }
+        else {
+            final QaItem item = mItems.get(position);
 
-            }
+            holder.tvName.setText(item.getQuestion());
 
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selected = parent.getItemAtPosition(position).toString();
-                StringBuilder result = new StringBuilder();
-                result.append(item.getId()).append(" ").append(selected);
-                Toast.makeText(parent.getContext(), result, Toast.LENGTH_LONG).show();
-            }
-        });
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                    mContext, android.R.layout.simple_spinner_item, item.getOptions());
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            holder.spinner.setAdapter(adapter);
+            holder.spinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    String selected = parent.getItemAtPosition(position).toString();
+                    StringBuilder result = new StringBuilder();
+                    result.append(position)
+                            .append(" ")
+                            .append(id)
+                            .append(" ")
+                            .append(item.getId())
+                            .append(" ").append(selected);
+                    Toast.makeText(mContext, result, Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+
+            });
+        }
     }
 
     @Override
-    public int getItemCount() { return mItems.size(); }
+    public int getItemViewType(int position) {
+        return (position == mItems.size()) ? R.layout.button_row : R.layout.item_row;
+    }
+
+    @Override
+    public int getItemCount() { return mItems.size() + 1; }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView tvName;
         public Spinner spinner;
+        public Button button;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             tvName = (TextView) itemView.findViewById(R.id.textView1);
             spinner = (Spinner) itemView.findViewById(R.id.spinner1);
+            button = (Button) itemView.findViewById(R.id.submit_button);
         }
     }
 }
