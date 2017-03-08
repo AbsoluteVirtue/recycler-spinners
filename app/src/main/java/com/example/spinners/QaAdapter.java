@@ -3,6 +3,7 @@ package com.example.spinners;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,17 +20,21 @@ import com.example.spinners.model.QaItem;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class QaAdapter extends RecyclerView.Adapter<QaAdapter.ViewHolder> {
 
     private List<QaItem> mItems;
     private Context mContext;
     private View itemView;
+    private SparseArray<String> mSubmittedItems;
 
     public QaAdapter(Context context, List<QaItem> items) {
         this.mContext = context;
         this.mItems = items;
+        this.mSubmittedItems = new SparseArray<>();
     }
 
     @Override
@@ -54,7 +59,7 @@ public class QaAdapter extends RecyclerView.Adapter<QaAdapter.ViewHolder> {
 
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(mContext, "Answers submitted successfully", Toast.LENGTH_LONG).show();
+                    recordAnswerForSubmission();
                 }
 
             });
@@ -72,13 +77,16 @@ public class QaAdapter extends RecyclerView.Adapter<QaAdapter.ViewHolder> {
 
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    int itemId = item.getId();
                     String selected = parent.getItemAtPosition(position).toString();
+                    mSubmittedItems.put(itemId, selected);
+
                     StringBuilder result = new StringBuilder();
                     result.append(position)
                             .append(" ")
                             .append(id)
                             .append(" ")
-                            .append(item.getId())
+                            .append(itemId)
                             .append(" ").append(selected);
                     Toast.makeText(mContext, result, Toast.LENGTH_LONG).show();
                 }
@@ -90,6 +98,16 @@ public class QaAdapter extends RecyclerView.Adapter<QaAdapter.ViewHolder> {
 
             });
         }
+    }
+
+    private void recordAnswerForSubmission() {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < mSubmittedItems.size(); i++) {
+            result.append(mSubmittedItems.keyAt(i));
+            result.append(" ");
+            result.append(mSubmittedItems.valueAt(i));
+        }
+        Toast.makeText(mContext, result, Toast.LENGTH_LONG).show();
     }
 
     @Override
