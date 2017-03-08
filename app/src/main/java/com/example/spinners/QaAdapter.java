@@ -6,11 +6,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.spinners.model.QaItem;
 
@@ -46,6 +48,18 @@ public class QaAdapter extends RecyclerView.Adapter<QaAdapter.ViewHolder> {
                 mContext, android.R.layout.simple_spinner_item, item.getOptions());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.spinner.setAdapter(adapter);
+        holder.spinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                return;
+            }
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selected = parent.getItemAtPosition(position).toString();
+                Toast.makeText(parent.getContext(), selected, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
