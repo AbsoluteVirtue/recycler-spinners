@@ -1,12 +1,19 @@
 package com.example.spinners.model;
 
+import com.google.gson.annotations.Expose;
+
 public class QaItem {
 
+    @Expose
     private int id;
+    @Expose
     private String question;
+    @Expose
     private String[] options;
 
-    public QaItem() {
+    public QaItem(String question, String[] options) {
+        this.question = question;
+        this.options = options;
     }
 
     public QaItem(int id, String question, String[] options) {
