@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.spinners.model.AuthResponseTest;
+import com.example.spinners.model.AuthTest;
 import com.example.spinners.model.QaItem;
 import com.example.spinners.sample.SampleDataProvider;
 import com.example.spinners.utils.JsonHelper;
@@ -26,15 +28,45 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    String dummyJson = SampleDataProvider.rawJson;
     List<QaItem> dataFromJson;
     SurveysService mApi;
+    AuthResponseTest resp;
+    String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        requestData();
+
+        //test Swagger Auth API
+        //attemptAuth();
+    }
+
+    private void attemptAuth() {
+        AuthTest credentials = new AuthTest("foo@example.com", "hello");
+
+        mApi = SurveyClientFactory.getSurveyService();
+        Call<AuthResponseTest> getCall = mApi.signIn(credentials);
+        getCall.enqueue(new Callback<AuthResponseTest>() {
+            @Override
+            public void onResponse(Call<AuthResponseTest> call, Response<AuthResponseTest> response) {
+                if(response.isSuccessful()) {
+                    resp = response.body();
+                    token = resp.getData().getToken();
+                    Toast.makeText(MainActivity.this, token, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AuthResponseTest> call, Throwable t) {
+                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void requestData() {
         mApi = SurveyClientFactory.getSurveyService();
         Call<List<QaItem>> getCall = mApi.getTestSurvey();
         getCall.enqueue(new Callback<List<QaItem>>() {
@@ -51,13 +83,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
-
-//        if (dataFromJson.isEmpty() || dataFromJson == null) {
-//            Toast.makeText(this,
-//                    "Didn't connect to remote server. Using backup data.",
-//                    Toast.LENGTH_LONG).show();
-//            dataFromJson = JsonHelper.importJson(this, dummyJson);
-//        }
     }
 
     private void updateDisplay() {
